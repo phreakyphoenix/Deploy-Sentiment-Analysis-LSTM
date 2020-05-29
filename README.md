@@ -1,7 +1,7 @@
 # Creating a Sentiment Analysis Web App
 ## Using PyTorch and SageMaker
 
-_Deep Learning Nanodegree Program | Deployment_
+_Deep Learning Nanodegree Program Project 4 | Deployment_
 
 ---
 
@@ -14,6 +14,8 @@ Some template code has already been provided for you, and you will need to imple
 In addition to implementing code, there will be questions for you to answer which relate to the task and your implementation. Each section where you will answer a question is preceded by a '**Question:**' header. Carefully read each question and provide your answer below the '**Answer:**' header by editing the Markdown cell.
 
 > **Note**: Code and Markdown cells can be executed using the **Shift+Enter** keyboard shortcut. In addition, a cell can be edited by typically clicking it (double-click for Markdown cells) or by pressing **Enter** while it is highlighted.
+
+> **Special Note**: To run an AWS model locally, run `estimator.create_model().model_data` to get the address where model.tar.gz is hosted, this file will contain model.pth (weights), model_info.pth (hyperparamters for training), word_dict.pkl (extras needed for prediction). Then mimic the functions in serve/predict.py.
 
 ## General Outline
 
