@@ -571,40 +571,39 @@ We will start by implementing our own neural network in PyTorch along with a tra
 ```python
 !pygmentize train/model.py
 ```
+```python
+import torch.nn as nn
 
-    [34mimport[39;49;00m [04m[36mtorch.nn[39;49;00m [34mas[39;49;00m [04m[36mnn[39;49;00m
-    
-    [34mclass[39;49;00m [04m[32mLSTMClassifier[39;49;00m(nn.Module):
-        [33m"""[39;49;00m
-    [33m    This is the simple RNN model we will be using to perform Sentiment Analysis.[39;49;00m
-    [33m    """[39;49;00m
-    
-        [34mdef[39;49;00m [32m__init__[39;49;00m([36mself[39;49;00m, embedding_dim, hidden_dim, vocab_size):
-            [33m"""[39;49;00m
-    [33m        Initialize the model by settingg up the various layers.[39;49;00m
-    [33m        """[39;49;00m
-            [36msuper[39;49;00m(LSTMClassifier, [36mself[39;49;00m).[32m__init__[39;49;00m()
-    
-            [36mself[39;49;00m.embedding = nn.Embedding(vocab_size, embedding_dim, padding_idx=[34m0[39;49;00m)
-            [36mself[39;49;00m.lstm = nn.LSTM(embedding_dim, hidden_dim)
-            [36mself[39;49;00m.dense = nn.Linear(in_features=hidden_dim, out_features=[34m1[39;49;00m)
-            [36mself[39;49;00m.sig = nn.Sigmoid()
-            
-            [36mself[39;49;00m.word_dict = [36mNone[39;49;00m
-    
-        [34mdef[39;49;00m [32mforward[39;49;00m([36mself[39;49;00m, x):
-            [33m"""[39;49;00m
-    [33m        Perform a forward pass of our model on some input.[39;49;00m
-    [33m        """[39;49;00m
-            x = x.t()
-            lengths = x[[34m0[39;49;00m,:]
-            reviews = x[[34m1[39;49;00m:,:]
-            embeds = [36mself[39;49;00m.embedding(reviews)
-            lstm_out, _ = [36mself[39;49;00m.lstm(embeds)
-            out = [36mself[39;49;00m.dense(lstm_out)
-            out = out[lengths - [34m1[39;49;00m, [36mrange[39;49;00m([36mlen[39;49;00m(lengths))]
-            [34mreturn[39;49;00m [36mself[39;49;00m.sig(out.squeeze())
+class LSTMClassifier(nn.Module):
+    """
+    This is the simple RNN model we will be using to perform Sentiment Analysis.
+    """
 
+    def __init__(self, embedding_dim, hidden_dim, vocab_size):
+        """
+        Initialize the model by settingg up the various layers.
+        """
+        super(LSTMClassifier, self).__init__()
+
+        self.embedding = nn.Embedding(vocab_size, embedding_dim, padding_idx=0)
+        self.lstm = nn.LSTM(embedding_dim, hidden_dim)
+        self.dense = nn.Linear(in_features=hidden_dim, out_features=1)
+        self.sig = nn.Sigmoid()
+        
+        self.word_dict = None
+
+    def forward(self, x):
+        """
+        Perform a forward pass of our model on some input.
+        """
+        x = x.t()
+        lengths = x[0,:]
+        reviews = x[1:,:]
+        embeds = self.embedding(reviews)
+        lstm_out, _ = self.lstm(embeds)
+        out = self.dense(lstm_out)
+        out = out[lengths - 1, range(len(lengths))]
+        return self.sig(out.squeeze())```
 
 The important takeaway from the implementation provided is that there are three parameters that we may wish to tweak to improve the performance of our model. These are the embedding dimension, the hidden dimension and the size of the vocabulary. We will likely want to make these parameters configurable in the training script so that if we wish to modify them we do not need to modify the script itself. We will see how to do this later on. To start we will write some of the training code in the notebook so that we can more easily diagnose any issues that arise.
 
@@ -720,68 +719,69 @@ estimator = PyTorch.attach(my_training_job_name)
     2020-05-26 02:45:24 Downloading - Downloading input data
     2020-05-26 02:45:24 Training - Training image download completed. Training in progress.
     2020-05-26 02:45:24 Uploading - Uploading generated training model
-    2020-05-26 02:45:24 Completed - Training job completed[34mbash: cannot set terminal process group (-1): Inappropriate ioctl for device[0m
-    [34mbash: no job control in this shell[0m
-    [34m2020-05-26 00:58:58,150 sagemaker-containers INFO     Imported framework sagemaker_pytorch_container.training[0m
-    [34m2020-05-26 00:58:58,153 sagemaker-containers INFO     No GPUs detected (normal if no gpus installed)[0m
-    [34m2020-05-26 00:58:58,165 sagemaker_pytorch_container.training INFO     Block until all host DNS lookups succeed.[0m
-    [34m2020-05-26 00:58:58,793 sagemaker_pytorch_container.training INFO     Invoking user training script.[0m
-    [34m2020-05-26 00:58:59,006 sagemaker-containers INFO     Module train does not provide a setup.py. [0m
-    [34mGenerating setup.py[0m
-    [34m2020-05-26 00:58:59,006 sagemaker-containers INFO     Generating setup.cfg[0m
-    [34m2020-05-26 00:58:59,007 sagemaker-containers INFO     Generating MANIFEST.in[0m
-    [34m2020-05-26 00:58:59,007 sagemaker-containers INFO     Installing module with the following command:[0m
-    [34m/usr/bin/python -m pip install -U . -r requirements.txt[0m
-    [34mProcessing /opt/ml/code[0m
-    [34mCollecting pandas (from -r requirements.txt (line 1))[0m
-    [34m  Downloading https://files.pythonhosted.org/packages/74/24/0cdbf8907e1e3bc5a8da03345c23cbed7044330bb8f73bb12e711a640a00/pandas-0.24.2-cp35-cp35m-manylinux1_x86_64.whl (10.0MB)[0m
-    [34mCollecting numpy (from -r requirements.txt (line 2))
-      Downloading https://files.pythonhosted.org/packages/38/92/fa5295d9755c7876cb8490eab866e1780154033fa45978d9cf74ffbd4c68/numpy-1.18.4-cp35-cp35m-manylinux1_x86_64.whl (20.0MB)[0m
-    [34mCollecting nltk (from -r requirements.txt (line 3))
-      Downloading https://files.pythonhosted.org/packages/92/75/ce35194d8e3022203cca0d2f896dbb88689f9b3fce8e9f9cff942913519d/nltk-3.5.zip (1.4MB)[0m
-    [34mCollecting beautifulsoup4 (from -r requirements.txt (line 4))
-      Downloading https://files.pythonhosted.org/packages/66/25/ff030e2437265616a1e9b25ccc864e0371a0bc3adb7c5a404fd661c6f4f6/beautifulsoup4-4.9.1-py3-none-any.whl (115kB)[0m
-    [34mCollecting html5lib (from -r requirements.txt (line 5))
-      Downloading https://files.pythonhosted.org/packages/a5/62/bbd2be0e7943ec8504b517e62bab011b4946e1258842bc159e5dfde15b96/html5lib-1.0.1-py2.py3-none-any.whl (117kB)[0m
-    [34mCollecting pytz>=2011k (from pandas->-r requirements.txt (line 1))
-      Downloading https://files.pythonhosted.org/packages/4f/a4/879454d49688e2fad93e59d7d4efda580b783c745fd2ec2a3adf87b0808d/pytz-2020.1-py2.py3-none-any.whl (510kB)[0m
-    [34mRequirement already satisfied, skipping upgrade: python-dateutil>=2.5.0 in /usr/local/lib/python3.5/dist-packages (from pandas->-r requirements.txt (line 1)) (2.7.5)[0m
-    [34mRequirement already satisfied, skipping upgrade: click in /usr/local/lib/python3.5/dist-packages (from nltk->-r requirements.txt (line 3)) (7.0)[0m
-    [34mCollecting joblib (from nltk->-r requirements.txt (line 3))
-      Downloading https://files.pythonhosted.org/packages/28/5c/cf6a2b65a321c4a209efcdf64c2689efae2cb62661f8f6f4bb28547cf1bf/joblib-0.14.1-py2.py3-none-any.whl (294kB)[0m
-    [34mCollecting regex (from nltk->-r requirements.txt (line 3))[0m
-    [34m  Downloading https://files.pythonhosted.org/packages/14/8d/d44863d358e9dba3bdfb06099bbbeddbac8fb360773ba73250a849af4b01/regex-2020.5.14.tar.gz (696kB)[0m
-    [34mCollecting tqdm (from nltk->-r requirements.txt (line 3))
-      Downloading https://files.pythonhosted.org/packages/c9/40/058b12e8ba10e35f89c9b1fdfc2d4c7f8c05947df2d5eb3c7b258019fda0/tqdm-4.46.0-py2.py3-none-any.whl (63kB)[0m
-    [34mCollecting soupsieve>1.2 (from beautifulsoup4->-r requirements.txt (line 4))
-      Downloading https://files.pythonhosted.org/packages/6f/8f/457f4a5390eeae1cc3aeab89deb7724c965be841ffca6cfca9197482e470/soupsieve-2.0.1-py3-none-any.whl[0m
-    [34mCollecting webencodings (from html5lib->-r requirements.txt (line 5))
-      Downloading https://files.pythonhosted.org/packages/f4/24/2a3e3df732393fed8b3ebf2ec078f05546de641fe1b667ee316ec1dcf3b7/webencodings-0.5.1-py2.py3-none-any.whl[0m
-    [34mRequirement already satisfied, skipping upgrade: six>=1.9 in /usr/local/lib/python3.5/dist-packages (from html5lib->-r requirements.txt (line 5)) (1.11.0)[0m
-    [34mBuilding wheels for collected packages: nltk, train, regex
-      Running setup.py bdist_wheel for nltk: started[0m
-    [34m  Running setup.py bdist_wheel for nltk: finished with status 'done'
+    2020-05-26 02:45:24 Completed - Training job completed
+bash: cannot set terminal process group (-1): Inappropriate ioctl for device
+bash: no job control in this shell
+2020-05-26 00:58:58,150 sagemaker-containers INFO     Imported framework sagemaker_pytorch_container.training
+2020-05-26 00:58:58,153 sagemaker-containers INFO     No GPUs detected (normal if no gpus installed)
+2020-05-26 00:58:58,165 sagemaker_pytorch_container.training INFO     Block until all host DNS lookups succeed.
+2020-05-26 00:58:58,793 sagemaker_pytorch_container.training INFO     Invoking user training script.
+2020-05-26 00:58:59,006 sagemaker-containers INFO     Module train does not provide a setup.py. 
+Generating setup.py
+2020-05-26 00:58:59,006 sagemaker-containers INFO     Generating setup.cfg
+2020-05-26 00:58:59,007 sagemaker-containers INFO     Generating MANIFEST.in
+2020-05-26 00:58:59,007 sagemaker-containers INFO     Installing module with the following command:
+/usr/bin/python -m pip install -U . -r requirements.txt
+Processing /opt/ml/code
+Collecting pandas (from -r requirements.txt (line 1))
+  Downloading https://files.pythonhosted.org/packages/74/24/0cdbf8907e1e3bc5a8da03345c23cbed7044330bb8f73bb12e711a640a00/pandas-0.24.2-cp35-cp35m-manylinux1_x86_64.whl (10.0MB)
+Collecting numpy (from -r requirements.txt (line 2))
+      Downloading https://files.pythonhosted.org/packages/38/92/fa5295d9755c7876cb8490eab866e1780154033fa45978d9cf74ffbd4c68/numpy-1.18.4-cp35-cp35m-manylinux1_x86_64.whl (20.0MB)
+Collecting nltk (from -r requirements.txt (line 3))
+      Downloading https://files.pythonhosted.org/packages/92/75/ce35194d8e3022203cca0d2f896dbb88689f9b3fce8e9f9cff942913519d/nltk-3.5.zip (1.4MB)
+Collecting beautifulsoup4 (from -r requirements.txt (line 4))
+      Downloading https://files.pythonhosted.org/packages/66/25/ff030e2437265616a1e9b25ccc864e0371a0bc3adb7c5a404fd661c6f4f6/beautifulsoup4-4.9.1-py3-none-any.whl (115kB)
+Collecting html5lib (from -r requirements.txt (line 5))
+      Downloading https://files.pythonhosted.org/packages/a5/62/bbd2be0e7943ec8504b517e62bab011b4946e1258842bc159e5dfde15b96/html5lib-1.0.1-py2.py3-none-any.whl (117kB)
+Collecting pytz>=2011k (from pandas->-r requirements.txt (line 1))
+      Downloading https://files.pythonhosted.org/packages/4f/a4/879454d49688e2fad93e59d7d4efda580b783c745fd2ec2a3adf87b0808d/pytz-2020.1-py2.py3-none-any.whl (510kB)
+Requirement already satisfied, skipping upgrade: python-dateutil>=2.5.0 in /usr/local/lib/python3.5/dist-packages (from pandas->-r requirements.txt (line 1)) (2.7.5)
+Requirement already satisfied, skipping upgrade: click in /usr/local/lib/python3.5/dist-packages (from nltk->-r requirements.txt (line 3)) (7.0)
+Collecting joblib (from nltk->-r requirements.txt (line 3))
+      Downloading https://files.pythonhosted.org/packages/28/5c/cf6a2b65a321c4a209efcdf64c2689efae2cb62661f8f6f4bb28547cf1bf/joblib-0.14.1-py2.py3-none-any.whl (294kB)
+Collecting regex (from nltk->-r requirements.txt (line 3))
+  Downloading https://files.pythonhosted.org/packages/14/8d/d44863d358e9dba3bdfb06099bbbeddbac8fb360773ba73250a849af4b01/regex-2020.5.14.tar.gz (696kB)
+Collecting tqdm (from nltk->-r requirements.txt (line 3))
+      Downloading https://files.pythonhosted.org/packages/c9/40/058b12e8ba10e35f89c9b1fdfc2d4c7f8c05947df2d5eb3c7b258019fda0/tqdm-4.46.0-py2.py3-none-any.whl (63kB)
+Collecting soupsieve>1.2 (from beautifulsoup4->-r requirements.txt (line 4))
+      Downloading https://files.pythonhosted.org/packages/6f/8f/457f4a5390eeae1cc3aeab89deb7724c965be841ffca6cfca9197482e470/soupsieve-2.0.1-py3-none-any.whl
+Collecting webencodings (from html5lib->-r requirements.txt (line 5))
+      Downloading https://files.pythonhosted.org/packages/f4/24/2a3e3df732393fed8b3ebf2ec078f05546de641fe1b667ee316ec1dcf3b7/webencodings-0.5.1-py2.py3-none-any.whl
+Requirement already satisfied, skipping upgrade: six>=1.9 in /usr/local/lib/python3.5/dist-packages (from html5lib->-r requirements.txt (line 5)) (1.11.0)
+Building wheels for collected packages: nltk, train, regex
+      Running setup.py bdist_wheel for nltk: started
+  Running setup.py bdist_wheel for nltk: finished with status 'done'
       Stored in directory: /root/.cache/pip/wheels/ae/8c/3f/b1fe0ba04555b08b57ab52ab7f86023639a526d8bc8d384306
       Running setup.py bdist_wheel for train: started
       Running setup.py bdist_wheel for train: finished with status 'done'
       Stored in directory: /tmp/pip-ephem-wheel-cache-3eloah1e/wheels/35/24/16/37574d11bf9bde50616c67372a334f94fa8356bc7164af8ca3
-      Running setup.py bdist_wheel for regex: started[0m
-    [34m  Running setup.py bdist_wheel for regex: finished with status 'done'
-      Stored in directory: /root/.cache/pip/wheels/ee/3a/5c/1f0ce151d6ddeee56e03e933603e21b5b8dcc727989fde82f5[0m
-    [34mSuccessfully built nltk train regex[0m
-    [34mInstalling collected packages: pytz, numpy, pandas, joblib, regex, tqdm, nltk, soupsieve, beautifulsoup4, webencodings, html5lib, train
+      Running setup.py bdist_wheel for regex: started
+  Running setup.py bdist_wheel for regex: finished with status 'done'
+      Stored in directory: /root/.cache/pip/wheels/ee/3a/5c/1f0ce151d6ddeee56e03e933603e21b5b8dcc727989fde82f5
+Successfully built nltk train regex
+Installing collected packages: pytz, numpy, pandas, joblib, regex, tqdm, nltk, soupsieve, beautifulsoup4, webencodings, html5lib, train
       Found existing installation: numpy 1.15.4
-        Uninstalling numpy-1.15.4:[0m
-    [34m      Successfully uninstalled numpy-1.15.4[0m
-    [34mSuccessfully installed beautifulsoup4-4.9.1 html5lib-1.0.1 joblib-0.14.1 nltk-3.5 numpy-1.18.4 pandas-0.24.2 pytz-2020.1 regex-2020.5.14 soupsieve-2.0.1 tqdm-4.46.0 train-1.0.0 webencodings-0.5.1[0m
-    [34mYou are using pip version 18.1, however version 20.2b1 is available.[0m
-    [34mYou should consider upgrading via the 'pip install --upgrade pip' command.[0m
-    [34m2020-05-26 00:59:21,667 sagemaker-containers INFO     No GPUs detected (normal if no gpus installed)[0m
-    [34m2020-05-26 00:59:21,681 sagemaker-containers INFO     Invoking user script
-    [0m
-    [34mTraining Env:
-    [0m
-    [34m{
+        Uninstalling numpy-1.15.4:
+      Successfully uninstalled numpy-1.15.4
+Successfully installed beautifulsoup4-4.9.1 html5lib-1.0.1 joblib-0.14.1 nltk-3.5 numpy-1.18.4 pandas-0.24.2 pytz-2020.1 regex-2020.5.14 soupsieve-2.0.1 tqdm-4.46.0 train-1.0.0 webencodings-0.5.1
+You are using pip version 18.1, however version 20.2b1 is available.
+You should consider upgrading via the 'pip install --upgrade pip' command.
+2020-05-26 00:59:21,667 sagemaker-containers INFO     No GPUs detected (normal if no gpus installed)
+2020-05-26 00:59:21,681 sagemaker-containers INFO     Invoking user script
+    
+Training Env:
+    
+{
         "input_config_dir": "/opt/ml/input/config",
         "input_data_config": {
             "training": {
@@ -822,58 +822,58 @@ estimator = PyTorch.attach(my_training_job_name)
             "network_interface_name": "eth0"
         },
         "additional_framework_parameters": {},
-        "module_name": "train"[0m
-    [34m}
-    [0m
-    [34mEnvironment variables:
-    [0m
-    [34mSM_OUTPUT_DATA_DIR=/opt/ml/output/data[0m
-    [34mPYTHONPATH=/usr/local/bin:/usr/lib/python35.zip:/usr/lib/python3.5:/usr/lib/python3.5/plat-x86_64-linux-gnu:/usr/lib/python3.5/lib-dynload:/usr/local/lib/python3.5/dist-packages:/usr/lib/python3/dist-packages[0m
-    [34mSM_TRAINING_ENV={"additional_framework_parameters":{},"channel_input_dirs":{"training":"/opt/ml/input/data/training"},"current_host":"algo-1","framework_module":"sagemaker_pytorch_container.training:main","hosts":["algo-1"],"hyperparameters":{"epochs":10,"hidden_dim":200},"input_config_dir":"/opt/ml/input/config","input_data_config":{"training":{"RecordWrapperType":"None","S3DistributionType":"FullyReplicated","TrainingInputMode":"File"}},"input_dir":"/opt/ml/input","job_name":"sagemaker-pytorch-2020-05-26-00-55-38-173","log_level":20,"model_dir":"/opt/ml/model","module_dir":"s3://sagemaker-us-east-2-482501550978/sagemaker-pytorch-2020-05-26-00-55-38-173/source/sourcedir.tar.gz","module_name":"train","network_interface_name":"eth0","num_cpus":4,"num_gpus":0,"output_data_dir":"/opt/ml/output/data","output_dir":"/opt/ml/output","output_intermediate_dir":"/opt/ml/output/intermediate","resource_config":{"current_host":"algo-1","hosts":["algo-1"],"network_interface_name":"eth0"},"user_entry_point":"train.py"}[0m
-    [34mSM_INPUT_CONFIG_DIR=/opt/ml/input/config[0m
-    [34mSM_HPS={"epochs":10,"hidden_dim":200}[0m
-    [34mSM_MODULE_NAME=train[0m
-    [34mSM_RESOURCE_CONFIG={"current_host":"algo-1","hosts":["algo-1"],"network_interface_name":"eth0"}[0m
-    [34mSM_USER_ARGS=["--epochs","10","--hidden_dim","200"][0m
-    [34mSM_CHANNELS=["training"][0m
-    [34mSM_HP_EPOCHS=10[0m
-    [34mSM_FRAMEWORK_PARAMS={}[0m
-    [34mSM_LOG_LEVEL=20[0m
-    [34mSM_NUM_CPUS=4[0m
-    [34mSM_NUM_GPUS=0[0m
-    [34mSM_FRAMEWORK_MODULE=sagemaker_pytorch_container.training:main[0m
-    [34mSM_INPUT_DIR=/opt/ml/input[0m
-    [34mSM_CURRENT_HOST=algo-1[0m
-    [34mSM_NETWORK_INTERFACE_NAME=eth0[0m
-    [34mSM_HP_HIDDEN_DIM=200[0m
-    [34mSM_USER_ENTRY_POINT=train.py[0m
-    [34mSM_OUTPUT_INTERMEDIATE_DIR=/opt/ml/output/intermediate[0m
-    [34mSM_MODEL_DIR=/opt/ml/model[0m
-    [34mSM_CHANNEL_TRAINING=/opt/ml/input/data/training[0m
-    [34mSM_INPUT_DATA_CONFIG={"training":{"RecordWrapperType":"None","S3DistributionType":"FullyReplicated","TrainingInputMode":"File"}}[0m
-    [34mSM_OUTPUT_DIR=/opt/ml/output[0m
-    [34mSM_MODULE_DIR=s3://sagemaker-us-east-2-482501550978/sagemaker-pytorch-2020-05-26-00-55-38-173/source/sourcedir.tar.gz[0m
-    [34mSM_HOSTS=["algo-1"]
-    [0m
-    [34mInvoking script with the following command:
-    [0m
-    [34m/usr/bin/python -m train --epochs 10 --hidden_dim 200
+        "module_name": "train"
+}
     
-    [0m
-    [34mUsing device cpu.[0m
-    [34mGet train data loader.[0m
-    [34mModel loaded with embedding_dim 32, hidden_dim 200, vocab_size 5000.[0m
-    [34mEpoch: 1, BCELoss: 0.668252805057837[0m
-    [34mEpoch: 2, BCELoss: 0.6161158279496797[0m
-    [34mEpoch: 3, BCELoss: 0.5219851841731947[0m
-    [34mEpoch: 4, BCELoss: 0.4554780885881307[0m
-    [34mEpoch: 5, BCELoss: 0.40820716716805283[0m
-    [34mEpoch: 6, BCELoss: 0.3567056558570083[0m
-    [34mEpoch: 7, BCELoss: 0.33254667265074594[0m
-    [34mEpoch: 8, BCELoss: 0.3093894063210001[0m
-    [34mEpoch: 9, BCELoss: 0.2959691146198584[0m
-    [34mEpoch: 10, BCELoss: 0.2810886316761679[0m
-    [34m2020-05-26 02:44:14,960 sagemaker-containers INFO     Reporting training SUCCESS[0m
+Environment variables:
+    
+SM_OUTPUT_DATA_DIR=/opt/ml/output/data
+PYTHONPATH=/usr/local/bin:/usr/lib/python35.zip:/usr/lib/python3.5:/usr/lib/python3.5/plat-x86_64-linux-gnu:/usr/lib/python3.5/lib-dynload:/usr/local/lib/python3.5/dist-packages:/usr/lib/python3/dist-packages
+SM_TRAINING_ENV={"additional_framework_parameters":{},"channel_input_dirs":{"training":"/opt/ml/input/data/training"},"current_host":"algo-1","framework_module":"sagemaker_pytorch_container.training:main","hosts":["algo-1"],"hyperparameters":{"epochs":10,"hidden_dim":200},"input_config_dir":"/opt/ml/input/config","input_data_config":{"training":{"RecordWrapperType":"None","S3DistributionType":"FullyReplicated","TrainingInputMode":"File"}},"input_dir":"/opt/ml/input","job_name":"sagemaker-pytorch-2020-05-26-00-55-38-173","log_level":20,"model_dir":"/opt/ml/model","module_dir":"s3://sagemaker-us-east-2-482501550978/sagemaker-pytorch-2020-05-26-00-55-38-173/source/sourcedir.tar.gz","module_name":"train","network_interface_name":"eth0","num_cpus":4,"num_gpus":0,"output_data_dir":"/opt/ml/output/data","output_dir":"/opt/ml/output","output_intermediate_dir":"/opt/ml/output/intermediate","resource_config":{"current_host":"algo-1","hosts":["algo-1"],"network_interface_name":"eth0"},"user_entry_point":"train.py"}
+SM_INPUT_CONFIG_DIR=/opt/ml/input/config
+SM_HPS={"epochs":10,"hidden_dim":200}
+SM_MODULE_NAME=train
+SM_RESOURCE_CONFIG={"current_host":"algo-1","hosts":["algo-1"],"network_interface_name":"eth0"}
+SM_USER_ARGS=["--epochs","10","--hidden_dim","200"]
+SM_CHANNELS=["training"]
+SM_HP_EPOCHS=10
+SM_FRAMEWORK_PARAMS={}
+SM_LOG_LEVEL=20
+SM_NUM_CPUS=4
+SM_NUM_GPUS=0
+SM_FRAMEWORK_MODULE=sagemaker_pytorch_container.training:main
+SM_INPUT_DIR=/opt/ml/input
+SM_CURRENT_HOST=algo-1
+SM_NETWORK_INTERFACE_NAME=eth0
+SM_HP_HIDDEN_DIM=200
+SM_USER_ENTRY_POINT=train.py
+SM_OUTPUT_INTERMEDIATE_DIR=/opt/ml/output/intermediate
+SM_MODEL_DIR=/opt/ml/model
+SM_CHANNEL_TRAINING=/opt/ml/input/data/training
+SM_INPUT_DATA_CONFIG={"training":{"RecordWrapperType":"None","S3DistributionType":"FullyReplicated","TrainingInputMode":"File"}}
+SM_OUTPUT_DIR=/opt/ml/output
+SM_MODULE_DIR=s3://sagemaker-us-east-2-482501550978/sagemaker-pytorch-2020-05-26-00-55-38-173/source/sourcedir.tar.gz
+SM_HOSTS=["algo-1"]
+    
+Invoking script with the following command:
+    
+/usr/bin/python -m train --epochs 10 --hidden_dim 200
+    
+    
+Using device cpu.
+Get train data loader.
+Model loaded with embedding_dim 32, hidden_dim 200, vocab_size 5000.
+Epoch: 1, BCELoss: 0.668252805057837
+Epoch: 2, BCELoss: 0.6161158279496797
+Epoch: 3, BCELoss: 0.5219851841731947
+Epoch: 4, BCELoss: 0.4554780885881307
+Epoch: 5, BCELoss: 0.40820716716805283
+Epoch: 6, BCELoss: 0.3567056558570083
+Epoch: 7, BCELoss: 0.33254667265074594
+Epoch: 8, BCELoss: 0.3093894063210001
+Epoch: 9, BCELoss: 0.2959691146198584
+Epoch: 10, BCELoss: 0.2810886316761679
+2020-05-26 02:44:14,960 sagemaker-containers INFO     Reporting training SUCCESS[0m
     Training seconds: 6435
     Billable seconds: 6435
 
@@ -1085,102 +1085,102 @@ Before writing our custom inference code, we will begin by taking a look at the 
 ```python
 !pygmentize serve/predict.py
 ```
+```python
+import argparse
+import json
+import os
+import pickle
+import sys
+import sagemaker_containers
+import pandas as pd
+import numpy as np
+import torch
+import torch.nn as nn
+import torch.optim as optim
+import torch.utils.data
 
-    [34mimport[39;49;00m [04m[36margparse[39;49;00m
-    [34mimport[39;49;00m [04m[36mjson[39;49;00m
-    [34mimport[39;49;00m [04m[36mos[39;49;00m
-    [34mimport[39;49;00m [04m[36mpickle[39;49;00m
-    [34mimport[39;49;00m [04m[36msys[39;49;00m
-    [34mimport[39;49;00m [04m[36msagemaker_containers[39;49;00m
-    [34mimport[39;49;00m [04m[36mpandas[39;49;00m [34mas[39;49;00m [04m[36mpd[39;49;00m
-    [34mimport[39;49;00m [04m[36mnumpy[39;49;00m [34mas[39;49;00m [04m[36mnp[39;49;00m
-    [34mimport[39;49;00m [04m[36mtorch[39;49;00m
-    [34mimport[39;49;00m [04m[36mtorch.nn[39;49;00m [34mas[39;49;00m [04m[36mnn[39;49;00m
-    [34mimport[39;49;00m [04m[36mtorch.optim[39;49;00m [34mas[39;49;00m [04m[36moptim[39;49;00m
-    [34mimport[39;49;00m [04m[36mtorch.utils.data[39;49;00m
-    
-    [34mfrom[39;49;00m [04m[36mmodel[39;49;00m [34mimport[39;49;00m LSTMClassifier
-    
-    [34mfrom[39;49;00m [04m[36mutils[39;49;00m [34mimport[39;49;00m review_to_words, convert_and_pad
-    
-    [34mdef[39;49;00m [32mmodel_fn[39;49;00m(model_dir):
-        [33m"""Load the PyTorch model from the `model_dir` directory."""[39;49;00m
-        [34mprint[39;49;00m([33m"[39;49;00m[33mLoading model.[39;49;00m[33m"[39;49;00m)
-    
-        [37m# First, load the parameters used to create the model.[39;49;00m
-        model_info = {}
-        model_info_path = os.path.join(model_dir, [33m'[39;49;00m[33mmodel_info.pth[39;49;00m[33m'[39;49;00m)
-        [34mwith[39;49;00m [36mopen[39;49;00m(model_info_path, [33m'[39;49;00m[33mrb[39;49;00m[33m'[39;49;00m) [34mas[39;49;00m f:
-            model_info = torch.load(f)
-    
-        [34mprint[39;49;00m([33m"[39;49;00m[33mmodel_info: {}[39;49;00m[33m"[39;49;00m.format(model_info))
-    
-        [37m# Determine the device and construct the model.[39;49;00m
-        device = torch.device([33m"[39;49;00m[33mcuda[39;49;00m[33m"[39;49;00m [34mif[39;49;00m torch.cuda.is_available() [34melse[39;49;00m [33m"[39;49;00m[33mcpu[39;49;00m[33m"[39;49;00m)
-        model = LSTMClassifier(model_info[[33m'[39;49;00m[33membedding_dim[39;49;00m[33m'[39;49;00m], model_info[[33m'[39;49;00m[33mhidden_dim[39;49;00m[33m'[39;49;00m], model_info[[33m'[39;49;00m[33mvocab_size[39;49;00m[33m'[39;49;00m])
-    
-        [37m# Load the store model parameters.[39;49;00m
-        model_path = os.path.join(model_dir, [33m'[39;49;00m[33mmodel.pth[39;49;00m[33m'[39;49;00m)
-        [34mwith[39;49;00m [36mopen[39;49;00m(model_path, [33m'[39;49;00m[33mrb[39;49;00m[33m'[39;49;00m) [34mas[39;49;00m f:
-            model.load_state_dict(torch.load(f))
-    
-        [37m# Load the saved word_dict.[39;49;00m
-        word_dict_path = os.path.join(model_dir, [33m'[39;49;00m[33mword_dict.pkl[39;49;00m[33m'[39;49;00m)
-        [34mwith[39;49;00m [36mopen[39;49;00m(word_dict_path, [33m'[39;49;00m[33mrb[39;49;00m[33m'[39;49;00m) [34mas[39;49;00m f:
-            model.word_dict = pickle.load(f)
-    
-        model.to(device).eval()
-    
-        [34mprint[39;49;00m([33m"[39;49;00m[33mDone loading model.[39;49;00m[33m"[39;49;00m)
-        [34mreturn[39;49;00m model
-    
-    [34mdef[39;49;00m [32minput_fn[39;49;00m(serialized_input_data, content_type):
-        [34mprint[39;49;00m([33m'[39;49;00m[33mDeserializing the input data.[39;49;00m[33m'[39;49;00m)
-        [34mif[39;49;00m content_type == [33m'[39;49;00m[33mtext/plain[39;49;00m[33m'[39;49;00m:
-            data = serialized_input_data.decode([33m'[39;49;00m[33mutf-8[39;49;00m[33m'[39;49;00m)
-            [34mreturn[39;49;00m data
-        [34mraise[39;49;00m [36mException[39;49;00m([33m'[39;49;00m[33mRequested unsupported ContentType in content_type: [39;49;00m[33m'[39;49;00m + content_type)
-    
-    [34mdef[39;49;00m [32moutput_fn[39;49;00m(prediction_output, accept):
-        [34mprint[39;49;00m([33m'[39;49;00m[33mSerializing the generated output.[39;49;00m[33m'[39;49;00m)
-        [34mreturn[39;49;00m [36mstr[39;49;00m(prediction_output)
-    
-    [34mdef[39;49;00m [32mpredict_fn[39;49;00m(input_data, model):
-        [34mprint[39;49;00m([33m'[39;49;00m[33mInferring sentiment of input data.[39;49;00m[33m'[39;49;00m)
-    
-        device = torch.device([33m"[39;49;00m[33mcuda[39;49;00m[33m"[39;49;00m [34mif[39;49;00m torch.cuda.is_available() [34melse[39;49;00m [33m"[39;49;00m[33mcpu[39;49;00m[33m"[39;49;00m)
-        
-        [34mif[39;49;00m model.word_dict [35mis[39;49;00m [36mNone[39;49;00m:
-            [34mraise[39;49;00m [36mException[39;49;00m([33m'[39;49;00m[33mModel has not been loaded properly, no word_dict.[39;49;00m[33m'[39;49;00m)
-        
-        [37m# TODO: Process input_data so that it is ready to be sent to our model.[39;49;00m
-        [37m#       You should produce two variables:[39;49;00m
-        [37m#         data_X   - A sequence of length 500 which represents the converted review[39;49;00m
-        [37m#         data_len - The length of the review[39;49;00m
-    
-        words = review_to_words(input_data)
-        data_X, data_len = convert_and_pad(model.word_dict, words)
-    
-        [37m# Using data_X and data_len we construct an appropriate input tensor. Remember[39;49;00m
-        [37m# that our model expects input data of the form 'len, review[500]'.[39;49;00m
-        data_pack = np.hstack((data_len, data_X))
-        data_pack = data_pack.reshape([34m1[39;49;00m, -[34m1[39;49;00m)
-        
-        data = torch.from_numpy(data_pack)
-        data = data.to(device)
-    
-        [37m# Make sure to put the model into evaluation mode[39;49;00m
-        model.eval()
-    
-        [37m# TODO: Compute the result of applying the model to the input data. The variable `result` should[39;49;00m
-        [37m#       be a numpy array which contains a single integer which is either 1 or 0[39;49;00m
-        [34mwith[39;49;00m torch.no_grad():
-            output = model.forward(data)
-    
-        result = np.round(output.numpy())
-    
-        [34mreturn[39;49;00m result
+from model import LSTMClassifier
 
+from utils import review_to_words, convert_and_pad
+
+def model_fn(model_dir):
+    """Load the PyTorch model from the `model_dir` directory."""
+    print("Loading model.")
+
+    # First, load the parameters used to create the model.
+    model_info = {}
+    model_info_path = os.path.join(model_dir, 'model_info.pth')
+    with open(model_info_path, 'rb') as f:
+        model_info = torch.load(f)
+
+    print("model_info: {}".format(model_info))
+
+    # Determine the device and construct the model.
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model = LSTMClassifier(model_info['embedding_dim'], model_info['hidden_dim'], model_info['vocab_size'])
+
+    # Load the store model parameters.
+    model_path = os.path.join(model_dir, 'model.pth')
+    with open(model_path, 'rb') as f:
+        model.load_state_dict(torch.load(f))
+
+    # Load the saved word_dict.
+    word_dict_path = os.path.join(model_dir, 'word_dict.pkl')
+    with open(word_dict_path, 'rb') as f:
+        model.word_dict = pickle.load(f)
+
+    model.to(device).eval()
+
+    print("Done loading model.")
+    return model
+
+def input_fn(serialized_input_data, content_type):
+    print('Deserializing the input data.')
+    if content_type == 'text/plain':
+        data = serialized_input_data.decode('utf-8')
+        return data
+    raise Exception('Requested unsupported ContentType in content_type: ' + content_type)
+
+def output_fn(prediction_output, accept):
+    print('Serializing the generated output.')
+    return str(prediction_output)
+
+def predict_fn(input_data, model):
+    print('Inferring sentiment of input data.')
+
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    
+    if model.word_dict is None:
+        raise Exception('Model has not been loaded properly, no word_dict.')
+    
+    # TODO: Process input_data so that it is ready to be sent to our model.
+    #       You should produce two variables:
+    #         data_X   - A sequence of length 500 which represents the converted review
+    #         data_len - The length of the review
+
+    words = review_to_words(input_data)
+    data_X, data_len = convert_and_pad(model.word_dict, words)
+
+    # Using data_X and data_len we construct an appropriate input tensor. Remember
+    # that our model expects input data of the form 'len, review[500]'.
+    data_pack = np.hstack((data_len, data_X))
+    data_pack = data_pack.reshape(1, -1)
+    
+    data = torch.from_numpy(data_pack)
+    data = data.to(device)
+
+    # Make sure to put the model into evaluation mode
+    model.eval()
+
+    # TODO: Compute the result of applying the model to the input data. The variable `result` should
+    #       be a numpy array which contains a single integer which is either 1 or 0
+    with torch.no_grad():
+        output = model.forward(data)
+
+    result = np.round(output.numpy())
+
+    return result
+```
 
 As mentioned earlier, the `model_fn` method is the same as the one provided in the training code and the `input_fn` and `output_fn` methods are very simple and your task will be to complete the `predict_fn` method. Make sure that you save the completed file as `predict.py` in the `serve` directory.
 
@@ -1291,8 +1291,6 @@ As an additional test, we can try sending the `test_review` that we looked at ea
 ```python
 predictor.predict(test_review)
 ```
-
-
 
 
     b'1.0'
