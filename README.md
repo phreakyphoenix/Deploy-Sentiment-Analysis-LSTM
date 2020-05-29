@@ -720,162 +720,162 @@ estimator = PyTorch.attach(my_training_job_name)
     2020-05-26 02:45:24 Training - Training image download completed. Training in progress.
     2020-05-26 02:45:24 Uploading - Uploading generated training model
     2020-05-26 02:45:24 Completed - Training job completed
-bash: cannot set terminal process group (-1): Inappropriate ioctl for device
-bash: no job control in this shell
-2020-05-26 00:58:58,150 sagemaker-containers INFO     Imported framework sagemaker_pytorch_container.training
-2020-05-26 00:58:58,153 sagemaker-containers INFO     No GPUs detected (normal if no gpus installed)
-2020-05-26 00:58:58,165 sagemaker_pytorch_container.training INFO     Block until all host DNS lookups succeed.
-2020-05-26 00:58:58,793 sagemaker_pytorch_container.training INFO     Invoking user training script.
-2020-05-26 00:58:59,006 sagemaker-containers INFO     Module train does not provide a setup.py. 
-Generating setup.py
-2020-05-26 00:58:59,006 sagemaker-containers INFO     Generating setup.cfg
-2020-05-26 00:58:59,007 sagemaker-containers INFO     Generating MANIFEST.in
-2020-05-26 00:58:59,007 sagemaker-containers INFO     Installing module with the following command:
-/usr/bin/python -m pip install -U . -r requirements.txt
-Processing /opt/ml/code
-Collecting pandas (from -r requirements.txt (line 1))
-  Downloading https://files.pythonhosted.org/packages/74/24/0cdbf8907e1e3bc5a8da03345c23cbed7044330bb8f73bb12e711a640a00/pandas-0.24.2-cp35-cp35m-manylinux1_x86_64.whl (10.0MB)
-Collecting numpy (from -r requirements.txt (line 2))
-      Downloading https://files.pythonhosted.org/packages/38/92/fa5295d9755c7876cb8490eab866e1780154033fa45978d9cf74ffbd4c68/numpy-1.18.4-cp35-cp35m-manylinux1_x86_64.whl (20.0MB)
-Collecting nltk (from -r requirements.txt (line 3))
-      Downloading https://files.pythonhosted.org/packages/92/75/ce35194d8e3022203cca0d2f896dbb88689f9b3fce8e9f9cff942913519d/nltk-3.5.zip (1.4MB)
-Collecting beautifulsoup4 (from -r requirements.txt (line 4))
-      Downloading https://files.pythonhosted.org/packages/66/25/ff030e2437265616a1e9b25ccc864e0371a0bc3adb7c5a404fd661c6f4f6/beautifulsoup4-4.9.1-py3-none-any.whl (115kB)
-Collecting html5lib (from -r requirements.txt (line 5))
-      Downloading https://files.pythonhosted.org/packages/a5/62/bbd2be0e7943ec8504b517e62bab011b4946e1258842bc159e5dfde15b96/html5lib-1.0.1-py2.py3-none-any.whl (117kB)
-Collecting pytz>=2011k (from pandas->-r requirements.txt (line 1))
-      Downloading https://files.pythonhosted.org/packages/4f/a4/879454d49688e2fad93e59d7d4efda580b783c745fd2ec2a3adf87b0808d/pytz-2020.1-py2.py3-none-any.whl (510kB)
-Requirement already satisfied, skipping upgrade: python-dateutil>=2.5.0 in /usr/local/lib/python3.5/dist-packages (from pandas->-r requirements.txt (line 1)) (2.7.5)
-Requirement already satisfied, skipping upgrade: click in /usr/local/lib/python3.5/dist-packages (from nltk->-r requirements.txt (line 3)) (7.0)
-Collecting joblib (from nltk->-r requirements.txt (line 3))
-      Downloading https://files.pythonhosted.org/packages/28/5c/cf6a2b65a321c4a209efcdf64c2689efae2cb62661f8f6f4bb28547cf1bf/joblib-0.14.1-py2.py3-none-any.whl (294kB)
-Collecting regex (from nltk->-r requirements.txt (line 3))
-  Downloading https://files.pythonhosted.org/packages/14/8d/d44863d358e9dba3bdfb06099bbbeddbac8fb360773ba73250a849af4b01/regex-2020.5.14.tar.gz (696kB)
-Collecting tqdm (from nltk->-r requirements.txt (line 3))
-      Downloading https://files.pythonhosted.org/packages/c9/40/058b12e8ba10e35f89c9b1fdfc2d4c7f8c05947df2d5eb3c7b258019fda0/tqdm-4.46.0-py2.py3-none-any.whl (63kB)
-Collecting soupsieve>1.2 (from beautifulsoup4->-r requirements.txt (line 4))
-      Downloading https://files.pythonhosted.org/packages/6f/8f/457f4a5390eeae1cc3aeab89deb7724c965be841ffca6cfca9197482e470/soupsieve-2.0.1-py3-none-any.whl
-Collecting webencodings (from html5lib->-r requirements.txt (line 5))
-      Downloading https://files.pythonhosted.org/packages/f4/24/2a3e3df732393fed8b3ebf2ec078f05546de641fe1b667ee316ec1dcf3b7/webencodings-0.5.1-py2.py3-none-any.whl
-Requirement already satisfied, skipping upgrade: six>=1.9 in /usr/local/lib/python3.5/dist-packages (from html5lib->-r requirements.txt (line 5)) (1.11.0)
-Building wheels for collected packages: nltk, train, regex
-      Running setup.py bdist_wheel for nltk: started
-  Running setup.py bdist_wheel for nltk: finished with status 'done'
-      Stored in directory: /root/.cache/pip/wheels/ae/8c/3f/b1fe0ba04555b08b57ab52ab7f86023639a526d8bc8d384306
-      Running setup.py bdist_wheel for train: started
-      Running setup.py bdist_wheel for train: finished with status 'done'
-      Stored in directory: /tmp/pip-ephem-wheel-cache-3eloah1e/wheels/35/24/16/37574d11bf9bde50616c67372a334f94fa8356bc7164af8ca3
-      Running setup.py bdist_wheel for regex: started
-  Running setup.py bdist_wheel for regex: finished with status 'done'
-      Stored in directory: /root/.cache/pip/wheels/ee/3a/5c/1f0ce151d6ddeee56e03e933603e21b5b8dcc727989fde82f5
-Successfully built nltk train regex
-Installing collected packages: pytz, numpy, pandas, joblib, regex, tqdm, nltk, soupsieve, beautifulsoup4, webencodings, html5lib, train
-      Found existing installation: numpy 1.15.4
-        Uninstalling numpy-1.15.4:
-      Successfully uninstalled numpy-1.15.4
-Successfully installed beautifulsoup4-4.9.1 html5lib-1.0.1 joblib-0.14.1 nltk-3.5 numpy-1.18.4 pandas-0.24.2 pytz-2020.1 regex-2020.5.14 soupsieve-2.0.1 tqdm-4.46.0 train-1.0.0 webencodings-0.5.1
-You are using pip version 18.1, however version 20.2b1 is available.
-You should consider upgrading via the 'pip install --upgrade pip' command.
-2020-05-26 00:59:21,667 sagemaker-containers INFO     No GPUs detected (normal if no gpus installed)
-2020-05-26 00:59:21,681 sagemaker-containers INFO     Invoking user script
-    
-Training Env:
-    
-{
-        "input_config_dir": "/opt/ml/input/config",
-        "input_data_config": {
-            "training": {
-                "S3DistributionType": "FullyReplicated",
-                "TrainingInputMode": "File",
-                "RecordWrapperType": "None"
-            }
-        },
-        "log_level": 20,
-        "framework_module": "sagemaker_pytorch_container.training:main",
-        "num_cpus": 4,
-        "output_dir": "/opt/ml/output",
-        "input_dir": "/opt/ml/input",
-        "hyperparameters": {
-            "epochs": 10,
-            "hidden_dim": 200
-        },
-        "network_interface_name": "eth0",
-        "user_entry_point": "train.py",
-        "current_host": "algo-1",
-        "module_dir": "s3://sagemaker-us-east-2-482501550978/sagemaker-pytorch-2020-05-26-00-55-38-173/source/sourcedir.tar.gz",
-        "channel_input_dirs": {
-            "training": "/opt/ml/input/data/training"
-        },
-        "num_gpus": 0,
-        "hosts": [
-            "algo-1"
-        ],
-        "output_intermediate_dir": "/opt/ml/output/intermediate",
-        "output_data_dir": "/opt/ml/output/data",
-        "model_dir": "/opt/ml/model",
-        "job_name": "sagemaker-pytorch-2020-05-26-00-55-38-173",
-        "resource_config": {
+    bash: cannot set terminal process group (-1): Inappropriate ioctl for device
+    bash: no job control in this shell
+    2020-05-26 00:58:58,150 sagemaker-containers INFO     Imported framework sagemaker_pytorch_container.training
+    2020-05-26 00:58:58,153 sagemaker-containers INFO     No GPUs detected (normal if no gpus installed)
+    2020-05-26 00:58:58,165 sagemaker_pytorch_container.training INFO     Block until all host DNS lookups succeed.
+    2020-05-26 00:58:58,793 sagemaker_pytorch_container.training INFO     Invoking user training script.
+    2020-05-26 00:58:59,006 sagemaker-containers INFO     Module train does not provide a setup.py. 
+    Generating setup.py
+    2020-05-26 00:58:59,006 sagemaker-containers INFO     Generating setup.cfg
+    2020-05-26 00:58:59,007 sagemaker-containers INFO     Generating MANIFEST.in
+    2020-05-26 00:58:59,007 sagemaker-containers INFO     Installing module with the following command:
+    /usr/bin/python -m pip install -U . -r requirements.txt
+    Processing /opt/ml/code
+    Collecting pandas (from -r requirements.txt (line 1))
+      Downloading https://files.pythonhosted.org/packages/74/24/0cdbf8907e1e3bc5a8da03345c23cbed7044330bb8f73bb12e711a640a00/pandas-0.24.2-cp35-cp35m-manylinux1_x86_64.whl (10.0MB)
+    Collecting numpy (from -r requirements.txt (line 2))
+          Downloading https://files.pythonhosted.org/packages/38/92/fa5295d9755c7876cb8490eab866e1780154033fa45978d9cf74ffbd4c68/numpy-1.18.4-cp35-cp35m-manylinux1_x86_64.whl (20.0MB)
+    Collecting nltk (from -r requirements.txt (line 3))
+          Downloading https://files.pythonhosted.org/packages/92/75/ce35194d8e3022203cca0d2f896dbb88689f9b3fce8e9f9cff942913519d/nltk-3.5.zip (1.4MB)
+    Collecting beautifulsoup4 (from -r requirements.txt (line 4))
+          Downloading https://files.pythonhosted.org/packages/66/25/ff030e2437265616a1e9b25ccc864e0371a0bc3adb7c5a404fd661c6f4f6/beautifulsoup4-4.9.1-py3-none-any.whl (115kB)
+    Collecting html5lib (from -r requirements.txt (line 5))
+          Downloading https://files.pythonhosted.org/packages/a5/62/bbd2be0e7943ec8504b517e62bab011b4946e1258842bc159e5dfde15b96/html5lib-1.0.1-py2.py3-none-any.whl (117kB)
+    Collecting pytz>=2011k (from pandas->-r requirements.txt (line 1))
+          Downloading https://files.pythonhosted.org/packages/4f/a4/879454d49688e2fad93e59d7d4efda580b783c745fd2ec2a3adf87b0808d/pytz-2020.1-py2.py3-none-any.whl (510kB)
+    Requirement already satisfied, skipping upgrade: python-dateutil>=2.5.0 in /usr/local/lib/python3.5/dist-packages (from pandas->-r requirements.txt (line 1)) (2.7.5)
+    Requirement already satisfied, skipping upgrade: click in /usr/local/lib/python3.5/dist-packages (from nltk->-r requirements.txt (line 3)) (7.0)
+    Collecting joblib (from nltk->-r requirements.txt (line 3))
+          Downloading https://files.pythonhosted.org/packages/28/5c/cf6a2b65a321c4a209efcdf64c2689efae2cb62661f8f6f4bb28547cf1bf/joblib-0.14.1-py2.py3-none-any.whl (294kB)
+    Collecting regex (from nltk->-r requirements.txt (line 3))
+      Downloading https://files.pythonhosted.org/packages/14/8d/d44863d358e9dba3bdfb06099bbbeddbac8fb360773ba73250a849af4b01/regex-2020.5.14.tar.gz (696kB)
+    Collecting tqdm (from nltk->-r requirements.txt (line 3))
+          Downloading https://files.pythonhosted.org/packages/c9/40/058b12e8ba10e35f89c9b1fdfc2d4c7f8c05947df2d5eb3c7b258019fda0/tqdm-4.46.0-py2.py3-none-any.whl (63kB)
+    Collecting soupsieve>1.2 (from beautifulsoup4->-r requirements.txt (line 4))
+          Downloading https://files.pythonhosted.org/packages/6f/8f/457f4a5390eeae1cc3aeab89deb7724c965be841ffca6cfca9197482e470/soupsieve-2.0.1-py3-none-any.whl
+    Collecting webencodings (from html5lib->-r requirements.txt (line 5))
+          Downloading https://files.pythonhosted.org/packages/f4/24/2a3e3df732393fed8b3ebf2ec078f05546de641fe1b667ee316ec1dcf3b7/webencodings-0.5.1-py2.py3-none-any.whl
+    Requirement already satisfied, skipping upgrade: six>=1.9 in /usr/local/lib/python3.5/dist-packages (from html5lib->-r requirements.txt (line 5)) (1.11.0)
+    Building wheels for collected packages: nltk, train, regex
+          Running setup.py bdist_wheel for nltk: started
+      Running setup.py bdist_wheel for nltk: finished with status 'done'
+          Stored in directory: /root/.cache/pip/wheels/ae/8c/3f/b1fe0ba04555b08b57ab52ab7f86023639a526d8bc8d384306
+          Running setup.py bdist_wheel for train: started
+          Running setup.py bdist_wheel for train: finished with status 'done'
+          Stored in directory: /tmp/pip-ephem-wheel-cache-3eloah1e/wheels/35/24/16/37574d11bf9bde50616c67372a334f94fa8356bc7164af8ca3
+          Running setup.py bdist_wheel for regex: started
+      Running setup.py bdist_wheel for regex: finished with status 'done'
+          Stored in directory: /root/.cache/pip/wheels/ee/3a/5c/1f0ce151d6ddeee56e03e933603e21b5b8dcc727989fde82f5
+    Successfully built nltk train regex
+    Installing collected packages: pytz, numpy, pandas, joblib, regex, tqdm, nltk, soupsieve, beautifulsoup4, webencodings, html5lib, train
+          Found existing installation: numpy 1.15.4
+            Uninstalling numpy-1.15.4:
+          Successfully uninstalled numpy-1.15.4
+    Successfully installed beautifulsoup4-4.9.1 html5lib-1.0.1 joblib-0.14.1 nltk-3.5 numpy-1.18.4 pandas-0.24.2 pytz-2020.1 regex-2020.5.14 soupsieve-2.0.1 tqdm-4.46.0 train-1.0.0 webencodings-0.5.1
+    You are using pip version 18.1, however version 20.2b1 is available.
+    You should consider upgrading via the 'pip install --upgrade pip' command.
+    2020-05-26 00:59:21,667 sagemaker-containers INFO     No GPUs detected (normal if no gpus installed)
+    2020-05-26 00:59:21,681 sagemaker-containers INFO     Invoking user script
+        
+    Training Env:
+        
+    {
+            "input_config_dir": "/opt/ml/input/config",
+            "input_data_config": {
+                "training": {
+                    "S3DistributionType": "FullyReplicated",
+                    "TrainingInputMode": "File",
+                    "RecordWrapperType": "None"
+                }
+            },
+            "log_level": 20,
+            "framework_module": "sagemaker_pytorch_container.training:main",
+            "num_cpus": 4,
+            "output_dir": "/opt/ml/output",
+            "input_dir": "/opt/ml/input",
+            "hyperparameters": {
+                "epochs": 10,
+                "hidden_dim": 200
+            },
+            "network_interface_name": "eth0",
+            "user_entry_point": "train.py",
+            "current_host": "algo-1",
+            "module_dir": "s3://sagemaker-us-east-2-482501550978/sagemaker-pytorch-2020-05-26-00-55-38-173/source/sourcedir.tar.gz",
+            "channel_input_dirs": {
+                "training": "/opt/ml/input/data/training"
+            },
+            "num_gpus": 0,
             "hosts": [
                 "algo-1"
             ],
-            "current_host": "algo-1",
-            "network_interface_name": "eth0"
-        },
-        "additional_framework_parameters": {},
-        "module_name": "train"
-}
-    
-Environment variables:
-    
-SM_OUTPUT_DATA_DIR=/opt/ml/output/data
-PYTHONPATH=/usr/local/bin:/usr/lib/python35.zip:/usr/lib/python3.5:/usr/lib/python3.5/plat-x86_64-linux-gnu:/usr/lib/python3.5/lib-dynload:/usr/local/lib/python3.5/dist-packages:/usr/lib/python3/dist-packages
-SM_TRAINING_ENV={"additional_framework_parameters":{},"channel_input_dirs":{"training":"/opt/ml/input/data/training"},"current_host":"algo-1","framework_module":"sagemaker_pytorch_container.training:main","hosts":["algo-1"],"hyperparameters":{"epochs":10,"hidden_dim":200},"input_config_dir":"/opt/ml/input/config","input_data_config":{"training":{"RecordWrapperType":"None","S3DistributionType":"FullyReplicated","TrainingInputMode":"File"}},"input_dir":"/opt/ml/input","job_name":"sagemaker-pytorch-2020-05-26-00-55-38-173","log_level":20,"model_dir":"/opt/ml/model","module_dir":"s3://sagemaker-us-east-2-482501550978/sagemaker-pytorch-2020-05-26-00-55-38-173/source/sourcedir.tar.gz","module_name":"train","network_interface_name":"eth0","num_cpus":4,"num_gpus":0,"output_data_dir":"/opt/ml/output/data","output_dir":"/opt/ml/output","output_intermediate_dir":"/opt/ml/output/intermediate","resource_config":{"current_host":"algo-1","hosts":["algo-1"],"network_interface_name":"eth0"},"user_entry_point":"train.py"}
-SM_INPUT_CONFIG_DIR=/opt/ml/input/config
-SM_HPS={"epochs":10,"hidden_dim":200}
-SM_MODULE_NAME=train
-SM_RESOURCE_CONFIG={"current_host":"algo-1","hosts":["algo-1"],"network_interface_name":"eth0"}
-SM_USER_ARGS=["--epochs","10","--hidden_dim","200"]
-SM_CHANNELS=["training"]
-SM_HP_EPOCHS=10
-SM_FRAMEWORK_PARAMS={}
-SM_LOG_LEVEL=20
-SM_NUM_CPUS=4
-SM_NUM_GPUS=0
-SM_FRAMEWORK_MODULE=sagemaker_pytorch_container.training:main
-SM_INPUT_DIR=/opt/ml/input
-SM_CURRENT_HOST=algo-1
-SM_NETWORK_INTERFACE_NAME=eth0
-SM_HP_HIDDEN_DIM=200
-SM_USER_ENTRY_POINT=train.py
-SM_OUTPUT_INTERMEDIATE_DIR=/opt/ml/output/intermediate
-SM_MODEL_DIR=/opt/ml/model
-SM_CHANNEL_TRAINING=/opt/ml/input/data/training
-SM_INPUT_DATA_CONFIG={"training":{"RecordWrapperType":"None","S3DistributionType":"FullyReplicated","TrainingInputMode":"File"}}
-SM_OUTPUT_DIR=/opt/ml/output
-SM_MODULE_DIR=s3://sagemaker-us-east-2-482501550978/sagemaker-pytorch-2020-05-26-00-55-38-173/source/sourcedir.tar.gz
-SM_HOSTS=["algo-1"]
-    
-Invoking script with the following command:
-    
-/usr/bin/python -m train --epochs 10 --hidden_dim 200
-    
-    
-Using device cpu.
-Get train data loader.
-Model loaded with embedding_dim 32, hidden_dim 200, vocab_size 5000.
-Epoch: 1, BCELoss: 0.668252805057837
-Epoch: 2, BCELoss: 0.6161158279496797
-Epoch: 3, BCELoss: 0.5219851841731947
-Epoch: 4, BCELoss: 0.4554780885881307
-Epoch: 5, BCELoss: 0.40820716716805283
-Epoch: 6, BCELoss: 0.3567056558570083
-Epoch: 7, BCELoss: 0.33254667265074594
-Epoch: 8, BCELoss: 0.3093894063210001
-Epoch: 9, BCELoss: 0.2959691146198584
-Epoch: 10, BCELoss: 0.2810886316761679
-2020-05-26 02:44:14,960 sagemaker-containers INFO     Reporting training SUCCESS[0m
-    Training seconds: 6435
-    Billable seconds: 6435
+            "output_intermediate_dir": "/opt/ml/output/intermediate",
+            "output_data_dir": "/opt/ml/output/data",
+            "model_dir": "/opt/ml/model",
+            "job_name": "sagemaker-pytorch-2020-05-26-00-55-38-173",
+            "resource_config": {
+                "hosts": [
+                    "algo-1"
+                ],
+                "current_host": "algo-1",
+                "network_interface_name": "eth0"
+            },
+            "additional_framework_parameters": {},
+            "module_name": "train"
+    }
+        
+    Environment variables:
+        
+    SM_OUTPUT_DATA_DIR=/opt/ml/output/data
+    PYTHONPATH=/usr/local/bin:/usr/lib/python35.zip:/usr/lib/python3.5:/usr/lib/python3.5/plat-x86_64-linux-gnu:/usr/lib/python3.5/lib-dynload:/usr/local/lib/python3.5/dist-packages:/usr/lib/python3/dist-packages
+    SM_TRAINING_ENV={"additional_framework_parameters":{},"channel_input_dirs":{"training":"/opt/ml/input/data/training"},"current_host":"algo-1","framework_module":"sagemaker_pytorch_container.training:main","hosts":["algo-1"],"hyperparameters":{"epochs":10,"hidden_dim":200},"input_config_dir":"/opt/ml/input/config","input_data_config":{"training":{"RecordWrapperType":"None","S3DistributionType":"FullyReplicated","TrainingInputMode":"File"}},"input_dir":"/opt/ml/input","job_name":"sagemaker-pytorch-2020-05-26-00-55-38-173","log_level":20,"model_dir":"/opt/ml/model","module_dir":"s3://sagemaker-us-east-2-482501550978/sagemaker-pytorch-2020-05-26-00-55-38-173/source/sourcedir.tar.gz","module_name":"train","network_interface_name":"eth0","num_cpus":4,"num_gpus":0,"output_data_dir":"/opt/ml/output/data","output_dir":"/opt/ml/output","output_intermediate_dir":"/opt/ml/output/intermediate","resource_config":{"current_host":"algo-1","hosts":["algo-1"],"network_interface_name":"eth0"},"user_entry_point":"train.py"}
+    SM_INPUT_CONFIG_DIR=/opt/ml/input/config
+    SM_HPS={"epochs":10,"hidden_dim":200}
+    SM_MODULE_NAME=train
+    SM_RESOURCE_CONFIG={"current_host":"algo-1","hosts":["algo-1"],"network_interface_name":"eth0"}
+    SM_USER_ARGS=["--epochs","10","--hidden_dim","200"]
+    SM_CHANNELS=["training"]
+    SM_HP_EPOCHS=10
+    SM_FRAMEWORK_PARAMS={}
+    SM_LOG_LEVEL=20
+    SM_NUM_CPUS=4
+    SM_NUM_GPUS=0
+    SM_FRAMEWORK_MODULE=sagemaker_pytorch_container.training:main
+    SM_INPUT_DIR=/opt/ml/input
+    SM_CURRENT_HOST=algo-1
+    SM_NETWORK_INTERFACE_NAME=eth0
+    SM_HP_HIDDEN_DIM=200
+    SM_USER_ENTRY_POINT=train.py
+    SM_OUTPUT_INTERMEDIATE_DIR=/opt/ml/output/intermediate
+    SM_MODEL_DIR=/opt/ml/model
+    SM_CHANNEL_TRAINING=/opt/ml/input/data/training
+    SM_INPUT_DATA_CONFIG={"training":{"RecordWrapperType":"None","S3DistributionType":"FullyReplicated","TrainingInputMode":"File"}}
+    SM_OUTPUT_DIR=/opt/ml/output
+    SM_MODULE_DIR=s3://sagemaker-us-east-2-482501550978/sagemaker-pytorch-2020-05-26-00-55-38-173/source/sourcedir.tar.gz
+    SM_HOSTS=["algo-1"]
+        
+    Invoking script with the following command:
+        
+    /usr/bin/python -m train --epochs 10 --hidden_dim 200
+        
+        
+    Using device cpu.
+    Get train data loader.
+    Model loaded with embedding_dim 32, hidden_dim 200, vocab_size 5000.
+    Epoch: 1, BCELoss: 0.668252805057837
+    Epoch: 2, BCELoss: 0.6161158279496797
+    Epoch: 3, BCELoss: 0.5219851841731947
+    Epoch: 4, BCELoss: 0.4554780885881307
+    Epoch: 5, BCELoss: 0.40820716716805283
+    Epoch: 6, BCELoss: 0.3567056558570083
+    Epoch: 7, BCELoss: 0.33254667265074594
+    Epoch: 8, BCELoss: 0.3093894063210001
+    Epoch: 9, BCELoss: 0.2959691146198584
+    Epoch: 10, BCELoss: 0.2810886316761679
+    2020-05-26 02:44:14,960 sagemaker-containers INFO     Reporting training SUCCESS
+        Training seconds: 6435
+        Billable seconds: 6435
 
 
 ## Step 5: Testing the model
