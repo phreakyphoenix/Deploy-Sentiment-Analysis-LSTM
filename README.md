@@ -7,14 +7,6 @@ _Deep Learning Nanodegree Program Project 4 | Deployment_
 
 Now that we have a basic understanding of how SageMaker works we will try to use it to construct a complete project from end to end. Our goal will be to have a simple web page which a user can use to enter a movie review. The web page will then send the review off to our deployed model which will predict the sentiment of the entered review.
 
-## Instructions
-
-Some template code has already been provided for you, and you will need to implement additional functionality to successfully complete this notebook. You will not need to modify the included code beyond what is requested. Sections that begin with '**TODO**' in the header indicate that you need to complete or implement some portion within them. Instructions will be provided for each section and the specifics of the implementation are marked in the code block with a `# TODO: ...` comment. Please be sure to read the instructions carefully!
-
-In addition to implementing code, there will be questions for you to answer which relate to the task and your implementation. Each section where you will answer a question is preceded by a '**Question:**' header. Carefully read each question and provide your answer below the '**Answer:**' header by editing the Markdown cell.
-
-> **Note**: Code and Markdown cells can be executed using the **Shift+Enter** keyboard shortcut. In addition, a cell can be edited by typically clicking it (double-click for Markdown cells) or by pressing **Enter** while it is highlighted.
-
 > **Special Note**: To run an AWS model locally, run `estimator.create_model().model_data` to get the address where model.tar.gz is hosted, this file will contain model.pth (weights), model_info.pth (hyperparamters for training), word_dict.pkl (extras needed for prediction). Then mimic the functions in serve/predict.py.
 
 ## General Outline
